@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Message</title>
+    <!-- Google Fonts for Calligraphy and Minimalist Text -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden; /* Allow vertical scrolling, hide horizontal */
+            min-height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background 1s ease-in-out;
+            position: relative;
+        }
+
+        /* Animated Colorful Background */
+        @keyframes gradientBG {
+            0% { background: #ff9a9e; }
+            25% { background: #fecfef; }
+            50% { background: #a1c4fd; }
+            75% { background: #fbc2eb; }
+            100% { background: #ff9a9e; }
+        }
+
+        .bg-animated {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(45deg, #ff9a9e, #fecfef, #a1c4fd, #fbc2eb);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            z-index: -2;
+        }
+
+        /* Falling Petals Container */
+        #petals-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .petal {
+            position: absolute;
+            background: linear-gradient(135deg, #ff5e62, #ff9966);
+            border-radius: 150% 0 150% 150%;
+            opacity: 0.8;
+            pointer-events: none;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translate(0, -10px) rotate(0deg) rotateY(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.85;
+            }
+            100% {
+                transform: translate(100px, 105vh) rotate(360deg) rotateY(180deg);
+                opacity: 0;
+            }
+        }
+
+        /* Couple Silhouette (Black color holding hands) */
+        .couple-silhouette {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 180px;
+            height: 140px;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.85;
+            filter: drop-shadow(0px -5px 10px rgba(0,0,0,0.15));
+        }
+
+        /* Corner Decorations */
+        .corner-deco {
+            position: fixed;
+            font-size: 32px;
+            z-index: 10;
+            user-select: none;
+            animation: float 3s ease-in-out infinite alternate;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .top-left { top: 25px; left: 25px; }
+        .top-right { top: 25px; right: 25px; }
+        .bottom-left { bottom: 25px; left: 25px; }
+        .bottom-right { bottom: 25px; right: 25px; }
+
+        @keyframes float {
+            from { transform: translateY(0px) rotate(0deg); }
+            to { transform: translateY(12px) rotate(6deg); }
+        }
+
+        /* Page Container */
+        .page {
+            position: absolute;
+            width: 90%;
+            max-width: 650px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+            transform: translateY(20px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2; /* Sit above the silhouette */
+            margin-bottom: 80px; /* Leave space so couple is visible */
+        }
+
+        .page.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        /* Page 1: White Box */
+        .white-box {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            text-align: center;
+            line-height: 1.8;
+            font-size: 16.5px;
+            color: #333;
+            position: relative;
+            width: 100%;
+            overflow-y: auto;
+            max-height: 75vh;
+            border: 2px solid rgba(255, 182, 193, 0.5);
+        }
+
+        /* Page 2: Ancient Letter Paper */
+        .ancient-paper {
+            background-color: #fdf5e6;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" opacity="0.05"><rect width="200" height="200" fill="%23d3c2a8"/><path d="M0 0h200v200H0z" fill="none"/></svg>');
+            border: 2px solid #c9b195;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.2), inset 0 0 40px rgba(211,194,168,0.6);
+            padding: 40px;
+            font-family: 'Dancing Script', cursive;
+            font-size: 25px;
+            color: #4a3b2c;
+            text-align: center;
+            line-height: 1.6;
+            position: relative;
+            border-radius: 6px;
+            width: 100%;
+            overflow-y: auto;
+            max-height: 75vh;
+        }
+
+        /* Page 3: Red Brown Wrinkled Paper */
+        .red-brown-paper {
+            background-color: #551c1c;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0,0,0,0.15) 0%, transparent 25%),
+                radial-gradient(circle at 80% 90%, rgba(0,0,0,0.25) 0%, transparent 35%),
+                linear-gradient(45deg, rgba(0,0,0,0.1) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.1) 75%, rgba(0,0,0,0.1));
+            box-shadow: 5px 5px 25px rgba(0,0,0,0.5), inset 0 0 60px rgba(0,0,0,0.8);
+            padding: 40px;
+            font-family: 'Dancing Script', cursive;
+            font-size: 23px;
+            color: #f9e4c1; /* High contrast Warm color */
+            text-align: center;
+            line-height: 1.6;
+            position: relative;
+            border-radius: 10px;
+            width: 100%;
+            border: 2px solid #3d1212;
+            overflow-y: auto;
+            max-height: 75vh;
+        }
+
+        /* Beautiful realistic rose SVG integrated on letterheads */
+        .rose-accent {
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 15px auto;
+            display: block;
+        }
+
+        /* Custom Scrollbar to match overall theme */
+        .white-box::-webkit-scrollbar, .ancient-paper::-webkit-scrollbar, .red-brown-paper::-webkit-scrollbar {
+            width: 8px;
+        }
+        .white-box::-webkit-scrollbar-track, .ancient-paper::-webkit-scrollbar-track, .red-brown-paper::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.03);
+            border-radius: 10px;
+        }
+        .white-box::-webkit-scrollbar-thumb, .ancient-paper::-webkit-scrollbar-thumb, .red-brown-paper::-webkit-scrollbar-thumb {
+            background: rgba(255, 117, 140, 0.4);
+            border-radius: 10px;
+        }
+        .red-brown-paper::-webkit-scrollbar-thumb {
+            background: rgba(249, 228, 193, 0.4);
+        }
+
+        .heading {
+            font-weight: 700;
+            font-size: 34px;
+            margin-bottom: 20px;
+            text-decoration: underline;
+            letter-spacing: 2px;
+            color: #ff8b8b;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        /* Toggle Switches */
+        .toggle-wrapper {
+            margin-top: 30px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        .toggle-switch {
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            width: 85px;
+            height: 38px;
+            position: relative;
+            cursor: pointer;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .toggle-switch::before {
+            content: 'Next';
+            position: absolute;
+            right: 15px;
+            font-size: 11px;
+            font-family: 'Poppins', sans-serif;
+            color: #777;
+            font-weight: 600;
+        }
+
+        .toggle-thumb {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #ff758c, #ff7eb3);
+            border-radius: 50%;
+            position: absolute;
+            left: 3px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+            transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 14px;
+        }
+
+        .toggle-switch.clicked .toggle-thumb {
+            transform: translateX(45px);
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+        }
+
+        /* Accept / Reject Toggles side-by-side */
+        .action-toggle {
+            background: #3e1212;
+            border: 1px solid #8e3a3a;
+            border-radius: 30px;
+            padding: 10px 22px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: #f9e4c1;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        .action-toggle:hover {
+            transform: translateY(-3px) scale(1.05);
+            background: #4c1717;
+        }
+
+        .action-toggle.accept:hover { 
+            border-color: #ff4d4d; 
+            box-shadow: 0 4px 20px rgba(255, 77, 77, 0.4);
+        }
+        .action-toggle.reject:hover { 
+            border-color: #4caf50; 
+            box-shadow: 0 4px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        .dot-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        /* Emoji Animation Container */
+        #emoji-container {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .animated-emoji {
+            font-size: 80px;
+            position: absolute;
+            animation-duration: 2.2s;
+            animation-fill-mode: forwards;
+        }
+
+        @keyframes popUpHappy {
+            0% { transform: scale(0) translateY(100px) rotate(0deg); opacity: 0; }
+            40% { transform: scale(1.6) translateY(-40px) rotate(15deg); opacity: 1; }
+            80% { opacity: 0.9; }
+            100% { transform: scale(1) translateY(-200px) rotate(-15deg); opacity: 0; }
+        }
+
+        @keyframes dropSad {
+            0% { transform: translateY(-120px) rotate(0deg); opacity: 0; }
+            20% { opacity: 1; }
+            100% { transform: translateY(105vh) rotate(60deg); opacity: 0; }
+        }
+
+        /* Final Thank You Screen */
+        .final-message {
+            text-align: center;
+            color: #333;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 50px 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+            width: 100%;
+            border: 2px solid #fff;
+            animation: pulseCard 2s infinite alternate;
+        }
+
+        @keyframes pulseCard {
+            from { box-shadow: 0 15px 35px rgba(255, 117, 140, 0.2); }
+            to { box-shadow: 0 15px 45px rgba(255, 117, 140, 0.45); }
+        }
+
+        /* Background Sparkle Animations */
+        .sparkle {
+            position: fixed;
+            font-size: 18px;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.6;
+            animation: floatSparkle 4s infinite linear;
+        }
+
+        @keyframes floatSparkle {
+            0% { transform: translateY(0) scale(0.8); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-100px) scale(1.2); opacity: 0; }
+        }
+
+        @media (max-width: 600px) {
+            .white-box, .ancient-paper, .red-brown-paper {
+                padding: 30px 20px;
+                font-size: 15px;
+            }
+            .ancient-paper, .red-brown-paper {
+                font-size: 21px;
+            }
+            .heading { font-size: 28px; }
+            .corner-deco { font-size: 24px; }
+            .couple-silhouette {
+                width: 140px;
+                height: 110px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-animated"></div>
+    <div id="petals-container"></div>
+
+    <!-- Beautiful Sparkles scattered in the background -->
+    <div class="sparkle" style="top: 20%; left: 15%; animation-delay: 0s;">✨</div>
+    <div class="sparkle" style="top: 60%; left: 10%; animation-delay: 2s;">💖</div>
+    <div class="sparkle" style="top: 40%; left: 85%; animation-delay: 1s;">✨</div>
+    <div class="sparkle" style="top: 80%; left: 75%; animation-delay: 3s;">💖</div>
+
+    <!-- Corner Decorations (Ribbons and Real-like Rose icons) -->
+    <div class="corner-deco top-left">🎀🌹</div>
+    <div class="corner-deco top-right">🌹🎀</div>
+    <div class="corner-deco bottom-left">🎀🌹</div>
+    <div class="corner-deco bottom-right">🌹🎀</div>
+
+    <!-- Couple Silhouette (Vector/Hand holding silhouette in Black) -->
+    <div class="couple-silhouette">
+        <svg viewBox="0 0 120 100" fill="#111111" xmlns="http://www.w3.org/2000/svg">
+            <!-- Left Figure (Boy) -->
+            <path d="M 42 32 C 46 32, 48 26, 45 22 C 43 18, 37 18, 35 22 C 32 26, 34 32, 42 32 Z" />
+            <path d="M 40 33 C 35 34, 32 37, 30 45 L 28 65 C 28 67, 30 68, 32 68 L 33 68 L 34 95 C 34 97, 37 97, 38 95 L 39 80 L 41 80 L 42 95 C 42 97, 45 97, 45 95 L 46 68 L 47 68 C 49 68, 51 67, 51 65 L 49 45 C 47 37, 45 34, 40 33 Z" />
+            <!-- Left Arm reaching to hold hand -->
+            <path d="M 47 43 C 51 47, 54 51, 56 55 C 57 56, 59 55, 58 53 C 55 49, 52 45, 48 41 Z" />
+            
+            <!-- Right Figure (Girl) -->
+            <path d="M 78 32 C 82 32, 84 26, 81 22 C 79 18, 73 18, 71 22 C 68 26, 70 32, 78 32 Z" />
+            <!-- Girl's dress outline -->
+            <path d="M 78 33 C 73 34, 69 39, 68 46 L 64 68 C 63 72, 65 75, 70 75 L 86 75 C 91 75, 93 72, 92 68 L 88 46 C 87 39, 83 34, 78 33 Z" />
+            <!-- Girl's legs -->
+            <path d="M 74 76 L 74 95 C 74 97, 76 97, 77 95 L 77 76 Z" />
+            <path d="M 82 76 L 82 95 C 82 97, 84 97, 85 95 L 85 76 Z" />
+            <!-- Right Arm reaching to hold hand -->
+            <path d="M 71 43 C 67 47, 64 51, 62 55 C 61 56, 59 55, 60 53 C 63 49, 66 45, 70 41 Z" />
+            
+            <!-- Held Hands detail -->
+            <circle cx="59" cy="54" r="2.5" />
+        </svg>
+    </div>
+
+    <!-- Emoji Animation Container -->
+    <div id="emoji-container"></div>
+
+    <!-- PAGE 1: Index (Home) -->
+    <div class="page active" id="page1">
+        <div class="white-box">
+            <!-- Decorative SVG Rose -->
+            <svg class="rose-accent" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C11.5 2 10 3 10 5C10 6 10.5 7 11 8.5C9.5 8 8 7.5 7 8C6 8.5 5.5 10 6.5 11C7.5 12 9 12 11 11.5C10.5 12.5 10 14 11 15C12 16 13.5 15.5 14 14.5C14.5 15.5 16 16 17 15C18 14 17.5 12.5 17 11.5C19 12 20.5 12 21.5 11C22.5 10 22 8.5 21 8C20 7.5 18.5 8 17 8.5C17.5 7 18 6 18 5C18 3 16.5 2 16 2C15.5 2 14.5 3.5 14 4.5C13.5 3.5 12.5 2 12 2Z" fill="#ff4d6d"/>
+                <path d="M12 15V22" stroke="#2d6a4f" stroke-width="2" stroke-linecap="round"/>
+                <path d="M12 17C10 17.5 8 16.5 7 18" stroke="#2d6a4f" stroke-width="2" stroke-linecap="round"/>
+                <path d="M12 19C14 19.5 15.5 19 16.5 20.5" stroke="#2d6a4f" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+
+            [Minnuvehh innu enk varan pateela veshmondann enk arijooda veshmonde shemikkane 😊 ithu njn just chythu nokanene vayichu nok adhyayittuchynenu chelappam thettelakka varuve chirikalleh 😁]
+            
+            <div class="toggle-wrapper">
+                <div class="toggle-switch" onclick="navigate(1)">
+                    <div class="toggle-thumb">✨</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE 2: Ancient Letter -->
+    <div class="page" id="page2">
+        <div class="ancient-paper">
+            <!-- Decorative Rose on Ancient letter -->
+            <svg class="rose-accent" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C11.5 2 10 3 10 5C10 6 10.5 7 11 8.5C9.5 8 8 7.5 7 8C6 8.5 5.5 10 6.5 11C7.5 12 9 12 11 11.5C10.5 12.5 10 14 11 15C12 16 13.5 15.5 14 14.5C14.5 15.5 16 16 17 15C18 14 17.5 12.5 17 11.5C19 12 20.5 12 21.5 11C22.5 10 22 8.5 21 8C20 7.5 18.5 8 17 8.5C17.5 7 18 6 18 5C18 3 16.5 2 16 2C15.5 2 14.5 3.5 14 4.5C13.5 3.5 12.5 2 12 2Z" fill="#e05780"/>
+                <path d="M12 15V22" stroke="#4a3b2c" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+
+            [Ithilu enthr parayanonnannm enk arijooda just type chyn. Innu classin poye appa innu thamasichu ahn class theerana . Innu ithu chynathan padipicha pashe ithrem valuthayittu padupichillah ithe pola ezhuthanem athu kanikkanem onnum paranju thannillah pinnah njn just try chythu nokanenu njn igna oorthappa innu ithrem padichilleh appa ithe pola orannam chythu nokann vechu. Innalen enk lap vara kitya .Pinnahh classakka kazhinju agu poyi lap nokanorunn pinnah avidekka ninnitan vannahh atan agu varan patatha .Innu nk poyittu egana ondarunn .Prethyekichannum vere onnum parayan illahh ne adutha pagilottu pokko 🤗]
+            
+            <div class="toggle-wrapper">
+                <div class="toggle-switch" onclick="navigate(2)">
+                    <div class="toggle-thumb">✨</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE 3: Red Brown Letter -->
+    <div class="page" id="page3">
+        <div class="red-brown-paper">
+            <div class="heading">[BREAK UP LETTER]</div>
+            [Minnuhhh nnk enthonnarunn entooda parayandarunna ini ennu kanan patonannm enk arijooda. Entooda vini paranju nnk entooda samsarikkanm enthrakke parayanonn annu njn ninnelleh bus keran nerathu annu appa onnulerunna parayan . Enk nintooda dheshyonnm illahdd pashe ithe pazhe pola avonn choyicha enk arijooda .Nmla reletionil nalla reethikk orupad preshnagal ond ithakka engana solve chyanonn enk arijooda .Enk ithu pazhe pola avonna ayalum ithu ini mumbottu povumbam kk ayittu povonna onnum enk oru prtheeshem illahh.Ninta mathram kutollah enk ne vicharikkana pola nikkan pateetillah .Pinnahh enthakke ond oru samdhaname illah mothom enthakke ahn onnu kk avham pazhe pola avhann vicharicha ithellahm strike chym .Annu oormenda nnk annu kk ayappa njn paranjillerunna ithu mikkavarum oru vallya heart breakil ethonn athe pola ayillehhh .Enk nalla reethi veshamond iganekka avanond igna vazhakannullatha athyavashyam vazhakk vhnm illahnn njn parayanillah pinnahh parasparam vhenonn thonnumbam agottum igittum nikkan pattana oru relation nml mumbu eganerunn athe pola akkanonakka vicharichen pashe athannm nadakonn thonnanillahdd nnk kore karayam athrenna enk ini enta chracter egana mattanon arijooda . Athum poranjittu ne orupad meture avhan ondadd athu ne manasikkanm kettah. so ee break up letter ne accept chyna reject chyna ithu ethu chythalm enk ariyan patuvee ]
+            
+            <div class="toggle-wrapper">
+                <div class="action-toggle accept" onclick="handleChoice('Accept')">
+                    <div class="dot-indicator" style="background: #ff4d4d; box-shadow: 0 0 8px #ff4d4d;"></div> Accept
+                </div>
+                <div class="action-toggle reject" onclick="handleChoice('Reject')">
+                    <div class="dot-indicator" style="background: #4caf50; box-shadow: 0 0 8px #4caf50;"></div> Reject
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Final Page (Success / Thank you) -->
+    <div class="page" id="page4">
+        <div class="final-message">
+            <h2 style="font-family: 'Dancing Script', cursive; font-size: 40px; color: #d63384; margin-bottom: 10px;">Thank You! 💖</h2>
+            <p style="font-size: 16px; font-weight: 600; color: #555;">Your choice has been securely sent.</p>
+            <div style="font-size: 30px; margin-top: 15px;">🎀 ✨🌹✨ 🎀</div>
+        </div>
+    </div>
+
+    <script>
+        // Generate Rose Petals dynamically
+        const petalsContainer = document.getElementById('petals-container');
+        const colors = ['#ff5e62', '#ff9966', '#ff758c', '#ff7eb3', '#f05780', '#e03e52'];
+
+        function createPetal() {
+            const petal = document.createElement('div');
+            petal.className = 'petal';
+            
+            // Random sizes & positions
+            const size = Math.random() * 15 + 10; 
+            petal.style.width = size + 'px';
+            petal.style.height = size + 'px';
+            petal.style.left = Math.random() * 100 + 'vw';
+            
+            // Shuffling beautiful petal colors
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            petal.style.background = `linear-gradient(135deg, ${randomColor}, #ffccd5)`;
+            
+            // Animating speed
+            const duration = Math.random() * 5 + 5; // between 5s and 10s
+            petal.style.animationDuration = duration + 's';
+            
+            petalsContainer.appendChild(petal);
+            
+            // Remove after finish
+            setTimeout(() => {
+                petal.remove();
+            }, duration * 1000);
+        }
+
+        // Keep generating rose petals
+        setInterval(createPetal, 300);
+
+        // Navigation Logic
+        function navigate(currentPage) {
+            const currentSwitch = document.querySelectorAll('.toggle-switch')[currentPage - 1];
+            currentSwitch.classList.add('clicked');
+            
+            setTimeout(() => {
+                document.getElementById(`page${currentPage}`).classList.remove('active');
+                document.getElementById(`page${currentPage + 1}`).classList.add('active');
+            }, 400); // Wait for switch transition
+        }
+
+        // Handle Accept / Reject
+        function handleChoice(choice) {
+            triggerEmojiAnimation(choice);
+            sendEmail(choice);
+
+            // Transition to final page after animations finish
+            setTimeout(() => {
+                document.getElementById('page3').classList.remove('active');
+                document.getElementById('page4').classList.add('active');
+            }, 2300);
+        }
+
+        // Trigger Emoji Animations
+        function triggerEmojiAnimation(choice) {
+            const container = document.getElementById('emoji-container');
+            container.innerHTML = ''; 
+
+            const emojiCount = 18;
+            for(let i=0; i<emojiCount; i++) {
+                const el = document.createElement('div');
+                el.className = 'animated-emoji';
+                el.style.left = Math.random() * 90 + 'vw';
+                
+                if(choice === 'Accept') {
+                    // Sad emoji dropping down ☹️
+                    el.innerText = '☹️';
+                    el.style.top = '-100px';
+                    el.style.animationName = 'dropSad';
+                    el.style.animationDelay = (Math.random() * 0.8) + 's';
+                } else {
+                    // Happy emoji floating upwards 😊
+                    el.innerText = '😊';
+                    el.style.top = (Math.random() * 70 + 20) + 'vh';
+                    el.style.animationName = 'popUpHappy';
+                    el.style.animationDelay = (Math.random() * 0.4) + 's';
+                }
+                
+                container.appendChild(el);
+            }
+        }
+
+        // Send Email via FormSubmit in Background
+        function sendEmail(choice) {
+            const emailURL = "https://formsubmit.co/ajax/lexcyclops@gmail.com";
+            
+            fetch(emailURL, {
+                method: "POST",
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    Selection: choice,
+                    Message: "The user selected option: " + choice,
+                    _subject: "Decision: " + choice + " to Break Up Letter"
+                })
+            })
+            .then(response => response.json())
+            .then(data => console.log("Successful submit:", data))
+            .catch(error => console.error("Error submitting response:", error));
+        }
+    </script>
+</body>
+</html>
